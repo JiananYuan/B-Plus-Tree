@@ -9,6 +9,8 @@
 #include<climits>
 #include <vector>
 #include <chrono>
+#include <random>
+#include <stdlib.h>
 using namespace std;
 using namespace chrono;
 int MAX = 50; //size of each node
@@ -59,19 +61,23 @@ int main(int argc, char* argv[])
 		getline(readstr, number, ',');
 		under_data.push_back(atoll(number.data()));
 	}
-	cout << "数据规模: " << under_data.size() << "\n\n";
+	cout << "数据规模: " << under_data.size() << "\n";
 
-	cout << "[Stage 2]: 建立B+树..." << "\n\n";
+	cout << "[Stage 2]: 建立B+树..." << "\n";
 	for (ll item : under_data) {
 		bpt.insert(item);
 	}
 
-	cout << "[Stage 3]: 写过程..." << "\n";
+	default_random_engine e(255);
+	uniform_int_distribution<uint64_t> uniform_dist_file2(0, 1000000);
+	uniform_int_distribution<uint64_t> uniform_dist_file(0, under_data.size());
 	double totle_time = 0;
-  	ll cnt = 0;
-	for (ll i = 100001; ; i += 1) {
+	ll cnt = 0;
+  	cout << "[Stage 3]: 读过程..." << "\n";
+  	while(true) {
+		ll tk = uniform_dist_file(e);
 		auto st = system_clock::now();
-		bpt.insert(i);
+		bpt.search(tk);
 		auto en = system_clock::now();
 		auto duration = duration_cast<microseconds>(en - st);
 		totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
@@ -80,14 +86,15 @@ int main(int argc, char* argv[])
 		}
 		cnt += 1;
 	}
-  	cout << "写吞吐量: " << cnt << "\n\n";
+  	cout << "读吞吐量: " << cnt << "\n";
 
+	cout << "[Stage 4]: 写过程..." << "\n";
 	totle_time = 0;
-	cnt = 0;
-  	cout << "[Stage 5]: 读过程..." << "\n";
-  	for (ll i = 0; ; i += 2) {
+  	cnt = 0;
+	while(true) {
+		ll tk = uniform_dist_file2(e);
 		auto st = system_clock::now();
-		bpt.search(i);
+		bpt.insert(tk);
 		auto en = system_clock::now();
 		auto duration = duration_cast<microseconds>(en - st);
 		totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
@@ -96,8 +103,7 @@ int main(int argc, char* argv[])
 		}
 		cnt += 1;
 	}
-  	cout << "读吞吐量: " << cnt << "\n\n";
-
+  	cout << "写吞吐量: " << cnt << "\n";
 	return 0;
 }
 

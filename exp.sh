@@ -1,9 +1,19 @@
-# ./bptree ../Index_homework/dataset/linear.csv
-# ./bptree ../Index_homework/dataset/seg1.csv
-# ./bptree ../Index_homework/dataset/seg10.csv
-# ./bptree ../Index_homework/dataset/normal.csv
+g++ main_latency.cpp -Ofast -o main_latency
+g++ main_goodput.cpp -Ofast -o main_goodput
 
-./main2 ../Index_homework/dataset/linear.csv
-./main2 ../Index_homework/dataset/seg1.csv
-./main2 ../Index_homework/dataset/seg10.csv
-./main2 ../Index_homework/dataset/normal.csv
+./main_latency ../Index_homework/dataset/linear.csv
+echo "==============================="
+./main_latency ../Index_homework/dataset/seg1.csv
+echo "==============================="
+./main_latency ../Index_homework/dataset/seg10.csv
+echo "==============================="
+./main_latency ../Index_homework/dataset/normal.csv
+echo "==============================="
+./main_goodput ../Index_homework/dataset/linear.csv
+echo "==============================="
+./main_goodput ../Index_homework/dataset/seg1.csv
+echo "==============================="
+./main_goodput ../Index_homework/dataset/seg10.csv
+echo "==============================="
+./main_goodput ../Index_homework/dataset/normal.csv
+echo "==============================="

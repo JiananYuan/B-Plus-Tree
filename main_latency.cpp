@@ -9,6 +9,8 @@
 #include<climits>
 #include <vector>
 #include <chrono>
+#include <random>
+#include <stdlib.h>
 using namespace std;
 using namespace chrono;
 int MAX = 50; //size of each node
@@ -59,36 +61,43 @@ int main(int argc, char* argv[])
 		getline(readstr, number, ',');
 		under_data.push_back(atoll(number.data()));
 	}
-	cout << "数据规模: " << under_data.size() << "\n\n";
+	cout << "数据规模: " << under_data.size() << "\n";
 
 	cout << "[Stage 2]: 建立B+树..." << "\n\n";
 	for (ll item : under_data) {
 		bpt.insert(item);
 	}
-	cout << "B+树大小: " << bpt.getSize(bpt.getRoot()) << "\n\n";
+	cout << "B+树大小: " << bpt.getSize(bpt.getRoot()) << "\n";
 
-	cout << "[Stage 3]: 写过程..." << "\n";
+	default_random_engine e(255);
+	uniform_int_distribution<uint64_t> uniform_dist_file2(0, 1000000);
+	uniform_int_distribution<uint64_t> uniform_dist_file(0, under_data.size());
 	double totle_time = 0;
-	auto st = system_clock::now();
-	for (int i = 100001; i <= 110000; i += 1) {
-		bpt.insert(i);
-	}
-	auto en = system_clock::now();
-	auto duration = duration_cast<microseconds>(en - st);
-	totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
-	cout << "写时延: " << totle_time / 10000 << "\n\n";
 
+	cout << "[Stage 3]: 读过程..." << "\n";
+	const int READ_SCALE = 10000;
+	for (int i = 1; i <= READ_SCALE; i += 1) {
+		ll tk = uniform_dist_file(e);
+		auto st = system_clock::now();
+		bpt.search(tk);
+		auto en = system_clock::now();
+		auto duration = duration_cast<microseconds>(en - st);
+		totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
+	}
+	cout << "读时延: " << totle_time / READ_SCALE << "\n";
+
+	cout << "[Stage 4]: 写过程..." << "\n";
+	const int WRITE_SCALE = 1000;
 	totle_time = 0;
-	cout << "[Stage 4]: 读过程..." << "\n";
-	st = system_clock::now();
-	for (int i = 0; i < 20000; i += 2) {
-		bpt.search(i);
+	for (int i = 1; i <= WRITE_SCALE; i += 1) {
+		ll tk = uniform_dist_file2(e);
+		auto st = system_clock::now();
+		bpt.insert(tk);
+		auto en = system_clock::now();
+		auto duration = duration_cast<microseconds>(en - st);
+		totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
 	}
-	en = system_clock::now();
-	duration = duration_cast<microseconds>(en - st);
-	totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
-	cout << "读时延: " << totle_time / 10000 << "\n\n";
-
+	cout << "写时延: " << totle_time / WRITE_SCALE << "\n";
 	return 0;
 }
 

@@ -2,6 +2,7 @@
     "files.associations": {
         "bptree.C": "cpp",
         "fstream": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "iostream": "cpp"
     }
 }
