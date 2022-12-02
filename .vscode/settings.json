@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "bptree.C": "cpp",
+        "fstream": "cpp",
+        "chrono": "cpp"
+    }
+}
