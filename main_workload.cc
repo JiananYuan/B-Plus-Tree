@@ -1,7 +1,7 @@
 //Author: Shashikant Kadam
 //Roll number 16CSE1026
 /*****B+ Tree*****/
-// 测量时间延迟和index大小
+// 测量吞吐量
 #include<iostream>
 #include<string>
 #include<sstream>
@@ -63,41 +63,47 @@ int main(int argc, char* argv[])
 	}
 	cout << "数据规模: " << under_data.size() << "\n";
 
-	cout << "[Stage 2]: 建立B+树..." << "\n\n";
+	cout << "[Stage 2]: 建立B+树..." << "\n";
 	for (ll item : under_data) {
 		bpt.insert(item);
 	}
-	cout << "B+树大小: " << bpt.getSize(bpt.getRoot()) << "\n";
 
 	default_random_engine e(255);
 	uniform_int_distribution<uint64_t> uniform_dist_file2(0, 1000000);
 	uniform_int_distribution<uint64_t> uniform_dist_file(0, under_data.size());
 	double totle_time = 0;
-
-	cout << "[Stage 3]: 读过程..." << "\n";
-	const int READ_SCALE = 10000;
-	for (int i = 1; i <= READ_SCALE; i += 1) {
+	ll cnt = 0;
+  	cout << "[Stage 3]: 读过程..." << "\n";
+  	while(true) {
 		ll tk = uniform_dist_file(e);
 		auto st = system_clock::now();
 		bpt.search(tk);
 		auto en = system_clock::now();
 		auto duration = duration_cast<microseconds>(en - st);
 		totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
+		if (totle_time > 1.0) {
+			break;
+		}
+		cnt += 1;
 	}
-	cout << "读时延: " << totle_time / READ_SCALE << "\n";
+  	cout << "读吞吐量: " << cnt << "\n";
 
 	cout << "[Stage 4]: 写过程..." << "\n";
-	const int WRITE_SCALE = 1000;
 	totle_time = 0;
-	for (int i = 1; i <= WRITE_SCALE; i += 1) {
+  	cnt = 0;
+	while(true) {
 		ll tk = uniform_dist_file2(e);
 		auto st = system_clock::now();
 		bpt.insert(tk);
 		auto en = system_clock::now();
 		auto duration = duration_cast<microseconds>(en - st);
 		totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
+		if (totle_time > 1.0) {
+			break;
+		}
+		cnt += 1;
 	}
-	cout << "写时延: " << totle_time / WRITE_SCALE << "\n";
+  	cout << "写吞吐量: " << cnt << "\n";
 	return 0;
 }
 
