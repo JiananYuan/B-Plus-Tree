@@ -15,8 +15,23 @@ do
     ./build/main_goodput ../Index_homework/dataset/$ds.csv
 done
 
+# 读多写少
 for ds in ${dataset[@]}
 do
-    echo ">>>>>>>>>> $ds: 不同工作负载的吞吐量 <<<<<<<<<<"
-    ./build/main_workload ../Index_homework/dataset/$ds.csv
+    echo ">>>>>>>>>> $ds: 读多写少负载的吞吐量 <<<<<<<<<<"
+    ./build/main_workload ../Index_homework/dataset/$ds.csv 0.8 0.2
+done
+
+# 写多读少
+for ds in ${dataset[@]}
+do
+    echo ">>>>>>>>>> $ds: 写多读少负载的吞吐量 <<<<<<<<<<"
+    ./build/main_workload ../Index_homework/dataset/$ds.csv 0.2 0.8
+done
+
+# 读写均衡
+for ds in ${dataset[@]}
+do
+    echo ">>>>>>>>>> $ds: 读写均衡负载的吞吐量 <<<<<<<<<<"
+    ./build/main_workload ../Index_homework/dataset/$ds.csv 0.5 0.5
 done
