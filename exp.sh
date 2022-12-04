@@ -1,6 +1,9 @@
-g++ main_latency.cc -Ofast -o ./build/main_latency
-g++ main_goodput.cc -Ofast -o ./build/main_goodput
-g++ main_workload.cc -Ofast -o ./build/main_workload
+#if [ ! -d "build" ];then
+#	mkdir build
+#fi
+#g++ main_latency.cc -Ofast -o ./build/main_latency
+#g++ main_goodput.cc -Ofast -o ./build/main_goodput
+#g++ main_workload.cc -Ofast -o ./build/main_workload
 
 dataset=(linear seg1 seg10 normal books_200M_uint64 fb_200M_uint64 osmc_200M_uint64 wiki_ts_200M_uint64)
 

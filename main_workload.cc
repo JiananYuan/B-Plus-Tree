@@ -4,7 +4,6 @@
 #include<string>
 #include<sstream>
 #include<fstream>
-#include<climits>
 #include <vector>
 #include <chrono>
 #include <random>
@@ -70,38 +69,38 @@ int main(int argc, char* argv[])
 	}
 
 	default_random_engine e(255);
-	uniform_int_distribution<uint64_t> uniform_dist_file(0, under_data.size());
+	uniform_int_distribution<uint64_t> uniform_dist_file(0, under_data.size() - 1);
 	uniform_int_distribution<uint64_t> uniform_dist_file2(0, 1000000);
 	double totle_time = 0;
 	ll cnt = 0;
 	int rwop = 0;
 	srand((unsigned)time(nullptr));
-  	cout << "[Stage 3]: 混合读写..." << "\n";
-  	while(true) {
-		rwop = rand() % 10;
-		if (rwop < read_percentage * 10) {
-			ll tk = uniform_dist_file(e);
-			tk = under_data[tk];
-			auto st = system_clock::now();
-			bpt.search(tk);
-			auto en = system_clock::now();
-			auto duration = duration_cast<microseconds>(en - st);
-			totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
-		}
-		else {
-			ll tk = uniform_dist_file2(e);
-			auto st = system_clock::now();
-			bpt.insert(tk);
-			auto en = system_clock::now();
-			auto duration = duration_cast<microseconds>(en - st);
-			totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
-		}
-		if (totle_time > 1.0) {
-			break;
-		}
-		cnt += 1;
+  cout << "[Stage 3]: 混合读写..." << "\n";
+  while(true) {
+    rwop = rand() % 10;
+    if (rwop < read_percentage * 10) {
+      ll tk = uniform_dist_file(e);
+      tk = under_data[tk];
+      auto st = system_clock::now();
+      bpt.search(tk);
+      auto en = system_clock::now();
+      auto duration = duration_cast<microseconds>(en - st);
+      totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
+    }
+    else {
+      ll tk = uniform_dist_file2(e);
+      auto st = system_clock::now();
+      bpt.insert(tk);
+      auto en = system_clock::now();
+      auto duration = duration_cast<microseconds>(en - st);
+      totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
+    }
+    if (totle_time > 1.0) {
+      break;
+    }
+    cnt += 1;
 	}
-  	cout << "混合吞吐量: " << cnt << "\n";
+  cout << "混合吞吐量: " << cnt << "\n";
 	return 0;
 }
 

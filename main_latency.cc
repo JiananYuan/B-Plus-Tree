@@ -4,13 +4,13 @@
 #include<string>
 #include<sstream>
 #include<fstream>
-#include<climits>
 #include <vector>
 #include <chrono>
 #include <random>
 #include <stdlib.h>
 #include <algorithm>
 #include "config.h"
+#include <stdio.h>
 using namespace std;
 using namespace chrono;
 int MAX = config::FANOUT; //size of each node
@@ -84,17 +84,18 @@ int main(int argc, char* argv[])
 		bpt.search(tk);
 		auto en = system_clock::now();
 		auto duration = duration_cast<microseconds>(en - st);
-		double ss = double(duration.count()) * microseconds::period::num / microseconds::period::den;
-		p99.push_back(ss);
-		totle_time += ss;
+    auto ns_d = duration_cast<nanoseconds>(en - st);
+    p99.push_back(double(ns_d.count()));
+		totle_time += double(duration.count()) * microseconds::period::num / microseconds::period::den;
 	}
-	cout << "读时延: " << totle_time / READ_SCALE << "\n";
+//  getchar();
+	printf("读时延: %.15f 秒\n", totle_time / READ_SCALE);
 	std::sort(p99.begin(), p99.end());
-	cout << "p99读延迟: " << p99[int(READ_SCALE * 0.99)] << "\n";
+	printf("p99读延迟: %.15f 纳秒\n", p99[int(READ_SCALE * 0.99)]);
 
 	cout << "[Stage 4]: 写过程..." << "\n";
 	p99.clear();
-	const int WRITE_SCALE = 1000;
+	const int WRITE_SCALE = 3000;
 	totle_time = 0;
 	for (int i = 1; i <= WRITE_SCALE; i += 1) {
 		ll tk = uniform_dist_file2(e);
@@ -103,12 +104,13 @@ int main(int argc, char* argv[])
 		auto en = system_clock::now();
 		auto duration = duration_cast<microseconds>(en - st);
 		double ss = double(duration.count()) * microseconds::period::num / microseconds::period::den;
-		p99.push_back(ss);
+    auto ns_d = duration_cast<nanoseconds>(en - st);
+		p99.push_back(double(ns_d.count()));
 		totle_time += ss;
 	}
-	cout << "写时延: " << totle_time / WRITE_SCALE << "\n";
+	printf("写时延: %.15f 秒\n", totle_time / WRITE_SCALE);
 	std::sort(p99.begin(), p99.end());
-	cout << "p99写延迟: " << p99[int(WRITE_SCALE * 0.99)] << "\n";
+	printf("p99写延迟: %.15f 纳秒\n", p99[int(WRITE_SCALE * 0.99)]);
 	return 0;
 }
 
@@ -785,7 +787,7 @@ void BPTree::cleanUp(Node* cursor)
 	{
 		if(cursor->IS_LEAF != true)
 		{
-			for(int i = 0; i < cursor->size+1; i++)
+			for(int i = cursor->size; i >= 0; i--)
 			{
 				cleanUp(cursor->ptr[i]);
 			}

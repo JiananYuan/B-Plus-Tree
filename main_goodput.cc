@@ -4,7 +4,6 @@
 #include<string>
 #include<sstream>
 #include<fstream>
-#include<climits>
 #include <vector>
 #include <chrono>
 #include <random>
@@ -72,8 +71,8 @@ int main(int argc, char* argv[])
 	uniform_int_distribution<uint64_t> uniform_dist_file2(0, 1000000);
 	double totle_time = 0;
 	ll cnt = 0;
-  	cout << "[Stage 3]: 读过程..." << "\n";
-  	while(true) {
+  cout << "[Stage 3]: 读过程..." << "\n";
+  while(true) {
 		ll tk = uniform_dist_file(e);
 		tk = under_data[tk];
 		auto st = system_clock::now();
@@ -86,11 +85,11 @@ int main(int argc, char* argv[])
 		}
 		cnt += 1;
 	}
-  	cout << "读吞吐量: " << cnt << "\n";
+  cout << "读吞吐量: " << cnt << "\n";
 
 	cout << "[Stage 4]: 写过程..." << "\n";
 	totle_time = 0;
-  	cnt = 0;
+  cnt = 0;
 	while(true) {
 		ll tk = uniform_dist_file2(e);
 		auto st = system_clock::now();
@@ -103,7 +102,7 @@ int main(int argc, char* argv[])
 		}
 		cnt += 1;
 	}
-  	cout << "写吞吐量: " << cnt << "\n";
+  cout << "写吞吐量: " << cnt << "\n";
 	return 0;
 }
 
