@@ -1,5 +1,3 @@
-//Author: Shashikant Kadam
-//Roll number 16CSE1026
 /*****B+ Tree*****/
 // 测量吞吐量
 #include<iostream>
@@ -11,9 +9,10 @@
 #include <chrono>
 #include <random>
 #include <stdlib.h>
+#include "config.h"
 using namespace std;
 using namespace chrono;
-int MAX = 50; //size of each node
+int MAX = config::FANOUT; //size of each node
 typedef long long ll;
 class BPTree; //self explanatory classes
 class Node
@@ -69,13 +68,14 @@ int main(int argc, char* argv[])
 	}
 
 	default_random_engine e(255);
+	uniform_int_distribution<uint64_t> uniform_dist_file(0, under_data.size() - 1);
 	uniform_int_distribution<uint64_t> uniform_dist_file2(0, 1000000);
-	uniform_int_distribution<uint64_t> uniform_dist_file(0, under_data.size());
 	double totle_time = 0;
 	ll cnt = 0;
   	cout << "[Stage 3]: 读过程..." << "\n";
   	while(true) {
 		ll tk = uniform_dist_file(e);
+		tk = under_data[tk];
 		auto st = system_clock::now();
 		bpt.search(tk);
 		auto en = system_clock::now();
